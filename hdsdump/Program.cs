@@ -639,7 +639,7 @@ namespace hdsdump
         public Microsoft.Win32.SafeHandles.SafeFileHandle pipeHandle = null;
 
         public int      manifesttype  = 0; // 0 - hds, 1 - xml playlist, 2 - m3u playlist, 3 - json manifest with template
-        public string fragUrlTemplate = "<FRAGURL>Seg<SEGNUM>-Frag<FRAGNUM>";
+		public string fragUrlTemplate = "Seg<SEGNUM>-Frag<FRAGNUM>";
         public string   auth          = "";
         public long     fromTimestamp = -1;
         public string   bootstrapUrl  = "";
@@ -1507,10 +1507,14 @@ namespace hdsdump
 
         public string GetFragmentUrl(int segNum, int fragNum)
         {
-            string fragUrl = this.fragUrlTemplate;
-            fragUrl = fragUrl.Replace("<FRAGURL>", this.fragUrl);
-            fragUrl = fragUrl.Replace("<SEGNUM>",  segNum.ToString());
-            fragUrl = fragUrl.Replace("<FRAGNUM>", fragNum.ToString());
+            string fragUrlTemplate = this.fragUrlTemplate;
+			string fragUrl = this.fragUrl;
+			fragUrlTemplate = fragUrlTemplate.Replace("<SEGNUM>",  segNum.ToString());
+			fragUrlTemplate = fragUrlTemplate.Replace("<FRAGNUM>", fragNum.ToString());
+			if (fragUrl.Contains("?"))
+				fragUrl = fragUrl.Replace("?", fragUrlTemplate + "?");
+			else
+				fragUrl = fragUrl + fragUrlTemplate;
             return fragUrl + this.auth;
         }
 
