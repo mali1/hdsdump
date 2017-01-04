@@ -738,7 +738,7 @@ namespace hdsdump
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; // Для определения избыточных вызовов
+        private bool disposedValue = false; // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
@@ -1055,7 +1055,7 @@ namespace hdsdump
         private void ParseManifest(string manifestUrl)
         {
 			#pragma warning disable 0219
-            string baseUrl = "", defaultQuality = ""; int i = 0;
+            string baseUrl = "", defaultQuality = "", url = ""; int i = 0;
             
             Program.Message("Processing manifest info....");
             XmlElement xml = this.GetManifest(ref manifestUrl);            
@@ -1130,7 +1130,11 @@ namespace hdsdump
                     {
                         if (AttrExist(node, "url")) 
                         {
-                            mediaEntry.bootstrapUrl = NormalizePath(mediaEntry.baseUrl + "/" + GetNodeProperty(node, "url"));
+							url = GetNodeProperty (node, "url");
+							if (isHttpUrl(url)) 
+								mediaEntry.bootstrapUrl = url;
+							else
+                            	mediaEntry.bootstrapUrl = NormalizePath(mediaEntry.baseUrl + "/" + url);
                             HTTP cc = new HTTP();
                             if (cc.get(mediaEntry.bootstrapUrl) != 200)
                                 Program.Quit("<c:Red>Failed to download bootstrap info. (Request status: <c:Magenta>" + cc.Status + "</c>)\n\r<c:DarkCyan>bootstrapUrl: <c:DarkRed>" + mediaEntry.bootstrapUrl);
